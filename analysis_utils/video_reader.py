@@ -4,6 +4,8 @@ import pandas as pd
 import argparse
 import numpy as np
 sample_rate=60
+
+# This Method 
 class VideoReader():
     def __init__(self,df_path,sample_rate=60):
         self.df=pd.read_csv(df_path)

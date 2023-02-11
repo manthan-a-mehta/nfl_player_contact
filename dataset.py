@@ -80,7 +80,6 @@ class NFLDataset(Dataset):
         # bounding box to tensor
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         # area of the bounding boxes
-        print(boxes)
         area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
         # no crowd instances
         iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int64)
@@ -107,10 +106,10 @@ class NFLDataset(Dataset):
         return len(self.all_images)
 # prepare the final datasets and data loaders
 def create_train_dataset():
-    train_dataset = CustomDataset(TRAIN_DIR,TRAINING_FILE_PATH, RESIZE_TO, RESIZE_TO, CLASSES, get_train_transform())
+    train_dataset = NFLDataset(TRAIN_DIR,TRAINING_FILE_PATH, RESIZE_TO, RESIZE_TO, CLASSES, get_train_transform())
     return train_dataset
 def create_valid_dataset():
-    valid_dataset = CustomDataset(VALID_DIR,VALID_FILE_PATH, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform())
+    valid_dataset = NFLDataset(VALID_DIR,VALID_FILE_PATH, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform())
     return valid_dataset
 def create_train_loader(train_dataset, num_workers=0):
     train_loader = DataLoader(
@@ -135,29 +134,33 @@ def create_valid_loader(valid_dataset, num_workers=0):
 # USAGE: python datasets.py
 if __name__ == '__main__':
     # sanity check of the Dataset pipeline with sample visualization
-    dataset = NFLDataset(
-        TRAIN_DIR,TRAINING_FILE_PATH, RESIZE_TO, RESIZE_TO, CLASSES
-    )
-    print(f"Number of training images: {len(dataset)}")
+    # train_dataset = NFLDataset(
+    #     TRAIN_DIR,TRAINING_FILE_PATH, RESIZE_TO, RESIZE_TO, CLASSES
+    # )
+    train_dataset=create_train_dataset()
+    valid_dataset=create_valid_dataset()
+    train_loader=create_train_loader(train_dataset)
+    valid_loader=create_valid_loader(valid_dataset)
+    # print(f"Number of training images: {len(dataset)}")
     
-    # function to visualize a single sample
-    def visualize_sample(image, target):
-        for box_num in range(len(target['boxes'])):
-            box = target['boxes'][box_num]
-            label = CLASSES[target['labels'][box_num]]
-            cv2.rectangle(
-                image, 
-                (int(box[0]), int(box[1])), (int(box[2]), int(box[3])),
-                (0, 255, 0), 2
-            )
-            cv2.putText(
-                image, label, (int(box[0]), int(box[1]-5)), 
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2
-            )
-        cv2.imshow('Image', image)
-        cv2.waitKey(0)
+    # # function to visualize a single sample
+    # def visualize_sample(image, target):
+    #     for box_num in range(len(target['boxes'])):
+    #         box = target['boxes'][box_num]
+    #         label = CLASSES[target['labels'][box_num]]
+    #         cv2.rectangle(
+    #             image, 
+    #             (int(box[0]), int(box[1])), (int(box[2]), int(box[3])),
+    #             (0, 255, 0), 2
+    #         )
+    #         cv2.putText(
+    #             image, label, (int(box[0]), int(box[1]-5)), 
+    #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2
+    #         )
+    #     cv2.imshow('Image', image)
+    #     cv2.waitKey(0)
         
-    NUM_SAMPLES_TO_VISUALIZE = 5
-    for i in range(NUM_SAMPLES_TO_VISUALIZE):
-        image, target = dataset[i]
-        visualize_sample(image, target)
+    # NUM_SAMPLES_TO_VISUALIZE = 5
+    # for i in range(NUM_SAMPLES_TO_VISUALIZE):
+    #     image, target = dataset[i]
+    #     visualize_sample(image, target)

@@ -2,10 +2,10 @@ from config import (
     DEVICE, NUM_CLASSES, NUM_EPOCHS, OUT_DIR,
     VISUALIZE_TRANSFORMED_IMAGES, NUM_WORKERS,
 )
-from model import create_model
-from custom_utils import Averager, SaveBestModel, save_model, save_loss_plot
+from model import Model
+from utilities import Averager, SaveBestModel, save_model, save_loss_plot
 from tqdm.auto import tqdm
-from datasets import (
+from dataset import (
     create_train_dataset, create_valid_dataset, 
     create_train_loader, create_valid_loader
 )
@@ -74,7 +74,8 @@ if __name__ == '__main__':
     print(f"Number of training samples: {len(train_dataset)}")
     print(f"Number of validation samples: {len(valid_dataset)}\n")
     # initialize the model and move to the computation device
-    model = create_model(num_classes=NUM_CLASSES)
+    m=Model(num_classes=NUM_CLASSES,model_name="faster_rcnn")
+    model = m.create_model()
     model = model.to(DEVICE)
     # get the model parameters
     params = [p for p in model.parameters() if p.requires_grad]
@@ -93,7 +94,7 @@ if __name__ == '__main__':
     MODEL_NAME = 'model'
     # whether to show transformed images from data loader or not
     if VISUALIZE_TRANSFORMED_IMAGES:
-        from custom_utils import show_tranformed_image
+        from utilities import show_tranformed_image
         show_tranformed_image(train_loader)
     # initialize SaveBestModel class
     save_best_model = SaveBestModel()
