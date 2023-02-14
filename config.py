@@ -5,9 +5,9 @@ NUM_EPOCHS = 5 # number of epochs to train for
 NUM_WORKERS = 4
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 # training images and XML files directory
-TRAIN_DIR = '/kaggle/working/images/'
+TRAIN_DIR = '/kaggle/working/images'
 # validation images and XML files directory
-VALID_DIR = '/kaggle/working/images/'
+VALID_DIR = '/kaggle/working/images'
 TRAINING_FILE_PATH="train_mini.csv"
 VALID_FILE_PATH="valid.csv"
 
